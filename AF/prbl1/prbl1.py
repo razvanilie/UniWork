@@ -9,3 +9,9 @@
 # b) Să se afișeze listele de adiacență ale unui arbore parțial T al lui G în care vârful v are
 # gradul cu 1 mai mic decât îl are în G: dT(v) = dG(v) – 1, dacă un astfel de arbore există O(m)
 
+f = open('graf.in', 'r')
+firstline = f.readline()
+n = int(firstline.split()[0])
+m = int(firstline.split()[1])
+for x in f.readlines():
+    
