@@ -64,7 +64,7 @@ addEdge(3, 5)
 addEdge(7, 8)
 addEdge(6, 10)
 addEdge(5, 9)
-addEdge(11, 10)
+addEdge(10, 11)
 addEdge(11, 12)
 addEdge(11, 13)
 addEdge(12, 13)
@@ -72,6 +72,11 @@ print(graphAsListDict)
 
 parentList = defaultdict(int)
 visited = defaultdict(int)
-DFS(1, 0)
+
+
+# if a graph is disconnected
+for eachNode in range(1,len(graphAsListDict) + 1):
+    if(visited[eachNode] == 0):
+        DFS(eachNode, 0)
 
 print(parentList)
