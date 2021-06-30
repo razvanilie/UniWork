@@ -1,117 +1,77 @@
-# Python3 program to print all the cycles
-# in an undirected graph
-N = 100000
-
-# variables to be used
-# in both functions
-graph = [[] for i in range(N)]
-cycles = [[] for i in range(N)]
+'''
+We want to find if we have cycles in an undirected graph and if we have than we will print them
+'''
 
 
-# Function to mark the vertex with
-# different colors for different cycles
-def dfs_cycle(u, p, color: list,
-              mark: list, par: list):
-    global cyclenumber
+from collections import defaultdict
+# if we have this edges: (1,2),(2,3),(2,5),(3,4),(4,5) in an undirected graph
+# the graphAsList variable will look like {1: [2], 2: [1, 3, 5], 3: [2, 4], 5: [2, 4], 4: [3, 5]}
+graphAsListDict = defaultdict(list)
 
-    # already (completely) visited vertex.
-    if color[u] == 2:
-        return
-
-    # seen vertex, but was not
-    # completely visited -> cycle detected.
-    # backtrack based on parents to
-    # find the complete cycle.
-    if color[u] == 1:
-        cyclenumber += 1
-        cur = p
-        mark[cur] = cyclenumber
-
-        # backtrack the vertex which are
-        # in the current cycle thats found
-        while cur != u:
-            cur = par[cur]
-            mark[cur] = cyclenumber
-
-        return
-
-    par[u] = p
-
-    # partially visited.
-    color[u] = 1
-
-    # simple dfs on graph
-    for v in graph[u]:
-
-        # if it has not been visited previously
-        if v != par[u]:
-            dfs_cycle(v, u, color, mark, par)
-
-    # completely visited.
-    color[u] = 2
-
-
-# add the edges to the graph
+# addining edges
 def addEdge(u, v):
-    graph[u].append(v)
-    graph[v].append(u)
+    graphAsListDict[u].append(v)
+    graphAsListDict[v].append(u)
 
 
-# Function to print the cycles
-def printCycles(edges, mark: list):
-    # push the edges that into the
-    # cycle adjacency list
-    for i in range(1, edges + 1):
-        if mark[i] != 0:
-            cycles[mark[i]].append(i)
+# Made a DFS to traverse each node and its neighbours and if a node has been traversed but not all its
+# neighbors have been traversed it means we went there once and now we have a cycle
+def DFS(currentNode, parentNode):
+    # it was traversed and completed
+    if visited[currentNode] == 2:
+        return
 
-    # print all the vertex with same cycle
-    for i in range(1, cyclenumber + 1):
-
-        # Print the i-th cycle
-        print("Cycle Number %d:" % i, end=" ")
-        for x in cycles[i]:
-            print(x, end=" ")
+    # we have a cycle since it was traversed for a first time but was not completed
+    # we will assign the parentNode to a new variable cycleNode
+    # and with a while that stops when we are at the currentNode again we will print all the vertexes in the graph
+    # if we have 1: [2], 2: [1, 3], 3: [2, 4, 5], 4: [3, 6], 5: [3, 6], 6: [4, 5]
+    # the output will be 5 6 4 3 since now the parent for 3 sent via the function arguments is 5
+    # the parent of 5 in parentList is 6, the parent of 6 in parentList is 4, the parent of 4 is 3
+    # but the parent of 3(cycleNode) is equal to the parent of currentNode(3) so the while stops
+    if visited[currentNode] == 1:
+        cycleNode = parentNode
+        while(cycleNode != parentList[currentNode]):
+            print(cycleNode, end=" ")
+            cycleNode = parentList[cycleNode]
         print()
+        return
 
 
-# Driver Code
-if __name__ == "__main__":
-    # add edges
-    addEdge(1, 2)
-    addEdge(2, 3)
-    addEdge(3, 4)
-    addEdge(4, 6)
-    addEdge(4, 7)
-    addEdge(5, 6)
-    addEdge(3, 5)
-    addEdge(7, 8)
-    addEdge(6, 10)
-    addEdge(5, 9)
-    addEdge(11, 10)
-    addEdge(11, 12)
-    addEdge(11, 13)
-    addEdge(12, 13)
+    parentList[currentNode] = parentNode
+    # traversed but not completed
+    visited[currentNode] = 1
 
-    # arrays required to color the
-    # graph, store the parent of node
-    color = [0] * N
-    par = [0] * N
+    # go through neighbours
+    # if we have 3: [2, 4, 5] with 2 being the parent of node 3 we will go only through 4 and 5
+    # since 2 is the parent of 3
+    # but if we have 1: [2], 2: [1, 3], 3: [2, 4, 5], 4: [3, 6], 5: [3, 6], 6: [4, 5]:
+    # the parent of 4 is 3, the parent of 6 is 4, the parent of 5 is 6 but the parent of 3 is 2
+    # so we will go from 5 to 3 and we'll find a cycle
+    for eachNode in graphAsListDict[currentNode]:
+        if eachNode != parentNode:
+            DFS(eachNode, currentNode)
 
-    # mark with unique numbers
-    mark = [0] * N
+    # mark it as traversed and completed
+    visited[currentNode] = 2
 
-    # store the numbers of cycle
-    cyclenumber = 0
-    edges = 13
+addEdge(1, 2)
+addEdge(2, 3)
+addEdge(3, 4)
+addEdge(4, 6)
+addEdge(4, 7)
+addEdge(5, 6)
+addEdge(3, 5)
+addEdge(7, 8)
+addEdge(6, 10)
+addEdge(5, 9)
+addEdge(11, 10)
+addEdge(11, 12)
+addEdge(11, 13)
+addEdge(12, 13)
+print(graphAsListDict)
 
-    # call DFS to mark the cycles
+parentList = defaultdict(int)
+visited = defaultdict(int)
+DFS(1, 0)
 
-    #if the graphs has disjoint sets of vertices( something like (1,2) (2,3) (2,4) and (5,6)) we have to go through
-    #each set of vertices to see if we have cycles
-    for var in range(1, edges + 1):
-        if(color[var] != 2):
-            print(str(var))
-            dfs_cycle(var, 0, color, mark, par)
-    # function to print the cycles
-    printCycles(edges, mark)
+print(parentList)
