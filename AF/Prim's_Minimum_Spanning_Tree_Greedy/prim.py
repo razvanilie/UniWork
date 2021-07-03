@@ -1,52 +1,54 @@
 from collections import defaultdict
-import sys
+import sys # for int_max
 
 
 class Graph:
     def __init__(self):
         self.graph = defaultdict(list)
-        self.noOfNodes = len(self.graph)
-        self.mstSet = set()
-        self.keyValues = defaultdict(lambda : sys.maxsize)
-        self.parent = defaultdict(lambda: -1)
+        self.mstSet = set() # here we will store all vertexes that are already in the mst
+        self.keyValues = defaultdict(lambda : sys.maxsize) # minimum weight of each vertex
 
     def addEdge(self, u, v, w):
         self.graph[u].append((v, w))
         self.graph[v].append((u, w))
-        self.noOfNodes = len(self.graph)
 
-    def printGraph(self):
-        print(self.graph)
-        print(self.noOfNodes)
-        for x in self.mstSet:
-            print(x)
-        print("xxxx")
 
     def prim(self):
+        noOfNodes = len(self.graph)
+
+        # add node 0
         self.mstSet.add(0)
         self.keyValues[0] = 0
         suma = 0
-        self.parent[0] = -1 # it s already -1 from defaultdict
-        self.graf = dict()
+        graf = dict()
         for g in self.graph[0]:
-                self.graf[g[0]] = (0, g[0], g[1])
+                graf[g[0]] = (0, g[0], g[1])
                 self.keyValues[g[0]] = g[1]
-        while len(self.mstSet) != self.noOfNodes:
-            tuplu = min(self.graf.items(), key=lambda x: x[1][2])
-            print("tuplu", tuplu)
-            self.mstSet.add(tuplu[0])
-            self.graf.pop(tuplu[0])
-            suma = suma + tuplu[1][2]
-            for g in self.graph[tuplu[0]]:
+
+        #####
+
+        # until we covered all vertexes
+        while len(self.mstSet) != noOfNodes:
+            # get the node that has the minimum weight and is not in mst
+            # more specifically the node that will be added in mst
+            nodeTuple = min(graf.items(), key=lambda x: x[1][2])
+            print(nodeTuple)
+
+            self.mstSet.add(nodeTuple[0])
+            # if we covered it then remove it from the pool of vertexes
+            graf.pop(nodeTuple[0])
+
+            suma = suma + nodeTuple[1][2]
+            # for every node (that is connected to the node with minimum weight)
+            for g in self.graph[nodeTuple[0]]:
+                # if it is not in the already covered nodes and the weight is smaller
                 if g[0] not in self.mstSet and g[1] < self.keyValues[g[0]]:
-                    self.graf[g[0]] = (tuplu[0], g[0], g[1])
+                    # update the node in the pool
+                    graf[g[0]] = (nodeTuple[0], g[0], g[1])
                     self.keyValues[g[0]] = g[1]
-        print("gata while")
-        print(self.graf)
-        print(self.mstSet)
-        print(self.keyValues)
-        #print(min(graf, key=lambda x: x[2]))
-        print("suma", suma)
+
+
+        print("mst sum", suma)
 
 
 g = Graph()
@@ -65,5 +67,4 @@ g.addEdge(6, 7, 1)
 g.addEdge(6, 8, 6)
 g.addEdge(7, 8, 7)
 
-g.printGraph()
 g.prim()
