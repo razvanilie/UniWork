@@ -63,6 +63,7 @@ class Graph:
         for eachTuple in result:
             minimumCost = minimumCost + eachTuple[2]
         print("Minimum Cost Spanning Tree:", minimumCost)
+
 g = Graph(4)
 g.addEdge(0, 1, 10)
 g.addEdge(0, 2, 6)
