@@ -29,15 +29,12 @@ class Graph:
         self.graph = []
         self.noOfNodes = n
 
-
     def addEdge(self, u, v, w):
         self.graph.append((u, v, w))
 
 
-    def printGraph(self):
-        print(self.graph)
-
     def kruskal(self):
+        # used a list for the graph and not a defaultdict cause i want to sort it and idk to sort a defaultdicts
         sortedGraph = sorted(self.graph, key=lambda item : item[2], reverse=False)
         print(sortedGraph)
         i = 0
@@ -45,6 +42,8 @@ class Graph:
         dictGraph = defaultdict(list)
         noOfEdges = 0
         result = []
+
+        #while we have vertexes to cover
         while noOfEdges < self.noOfNodes - 1:
             u, v, w = sortedGraph[i]
             i = i + 1
@@ -55,7 +54,7 @@ class Graph:
             if hasCycle(dictGraph, lenOfDictGraph) == False: #no cycle
                 noOfEdges = noOfEdges + 1
                 result.append([u, v, w])
-            else:
+            else: # if it has a cycle then jump over it and delete it from the pool
                 dictGraph[u].remove(v)
                 dictGraph[v].remove(u)
 
@@ -71,5 +70,4 @@ g.addEdge(0, 3, 5)
 g.addEdge(1, 3, 15)
 g.addEdge(2, 3, 4)
 
-g.printGraph()
 g.kruskal()
