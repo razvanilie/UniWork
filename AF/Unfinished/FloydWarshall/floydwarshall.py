@@ -6,7 +6,7 @@ V = 4
 # Define infinity as the large
 # enough value. This value will be
 # used for vertices not connected to each other
-INF = 99999
+INF = 999999
 from collections import defaultdict
 # Solves all pair shortest path
 # via Floyd Warshall Algorithm
