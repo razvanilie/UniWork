@@ -7,6 +7,8 @@ V = 4
 # enough value. This value will be
 # used for vertices not connected to each other
 INF = 999999
+INF2 = 10000
+
 from collections import defaultdict
 # Solves all pair shortest path
 # via Floyd Warshall Algorithm
