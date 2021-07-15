@@ -1,8 +1,3 @@
-# For an undirected graph, it's easy since we can do a simple DFS search and if it goes through all the nodes than
-# it is strongly connected
-# For a directed graph
-# create a stack, run a dfs and add the element to the stack after all its children have been visited
-# reverse directions and do dfs for each element from stack
 
 from collections import defaultdict
 
@@ -11,51 +6,47 @@ class Graph:
     def __init__(self, V):
         self.V = V
         self.graph = defaultdict(list)
+        self.id = 0
 
     def addEdge(self,u,v):
         self.graph[u].append(v)
 
-    def DFS(self, x, visited):
-        print(x, end=",")
-        visited[x] = True
-        for node in self.graph[x]:
-            if visited[node] == False:
-                self.DFS(node, visited)
-
-    def DFSwithStack(self, x, visited, stack):
-        visited[x] = True
-        for node in self.graph[x]:
-            if visited[node] == False:
-                self.DFSwithStack(node, visited, stack)
+    def DFSwithStack(self, x, low, disc, vertexesInStack, stack):
+        low[x] = self.id
+        disc[x] = self.id
+        self.id += 1
+        vertexesInStack[x] = True
         stack.append(x)
+        for node in self.graph[x]:
+            if disc[node] == -1: #not visited
+                self.DFSwithStack(node, low, disc, vertexesInStack, stack)
+                low[x] = min(low[x], low[node])
+            elif vertexesInStack[node] == True: #it's in stack so is not a crossedge
+                low[x] = min(low[x], low[node])
+        w = -1  # To store stack extracted vertices
+        if low[x] == disc[x]:
+            while w != x:
+                w = stack.pop()
+                print(w, end=",")
+                vertexesInStack[w] = False
+
+            print()
+
     def printGraph(self):
         for x in self.graph:
             print(x, self.graph[x])
 
-    def getTranspose(self):
-        gT = Graph(self.V)
-        for x in self.graph:
-            for y in self.graph[x]:
-                gT.addEdge(y, x)
-        return gT
-
     def stronglyConnected(self):
-        visited = [False for x in range(self.V)]
+        vertexesInStack = [False for x in range(self.V)]
+        disc = [-1 for x in range(self.V)]
+        low = [-1 for x in range(self.V)]
         stack = []
         for x in range(self.V):
-            if visited[x] == False:
-                self.DFSwithStack(x, visited, stack)
+            if disc[x] == -1:   #it's pretty much the same as visited
+                self.DFSwithStack(x, low, disc, vertexesInStack, stack)
         #print(stack)
 
-        gT = self.getTranspose()
-        #gT.printGraph()
-        visited = [False for x in range(self.V)]
 
-        while len(stack) > 0:
-            i = stack.pop()
-            if visited[i] == False:
-                gT.DFS(i, visited)
-                print()
 
 
 
