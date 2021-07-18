@@ -14,7 +14,7 @@ class Graph:
 
     def AP(self, x, visited, parent, low, disc):
         low[x] = self.id
-        disc[x] = self.id
+        disc[x] = self.id #discovery time
         self.id += 1
         children = 0
         visited[x] = True
@@ -24,9 +24,11 @@ class Graph:
                 children += 1
                 self.AP(node, visited, parent, low, disc)
                 low[x] = min(low[x], low[node]) # like tarjan
-                if parent[x] == -1 and children > 1:
+                # if x is the root and has at least 2 children
+                if parent[x] == -1 and children >= 2:
                     self.ap.add(x)
-                if parent[x] != -1 and low[node] >= disc[x]:
+                # if u is not the root and low value is more than discovery value
+                elif parent[x] != -1 and low[node] >= disc[x]:
                     self.ap.add(x)
             elif node != parent[x]: #it's in stack so is not a crossedge
                 low[x] = min(low[x], disc[node])
