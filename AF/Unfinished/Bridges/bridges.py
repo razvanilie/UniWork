@@ -43,7 +43,7 @@ class Graph:
                     print("%d %d" % (x, node))
 
 
-            elif node != parent[x]:  # Update low value of u for parent function calls.
+            elif node != parent[x]:  # Update low value of u for parent function calls
                 low[x] = min(low[x], disc[node])
 
     # DFS based function to find all bridges. It uses recursive
