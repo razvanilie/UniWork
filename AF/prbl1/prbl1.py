@@ -13,5 +13,4 @@ f = open('graf.in', 'r')
 firstline = f.readline()
 n = int(firstline.split()[0])
 m = int(firstline.split()[1])
-for x in f.readlines():
     

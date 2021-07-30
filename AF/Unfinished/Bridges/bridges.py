@@ -40,7 +40,7 @@ class Graph:
                 low[x] = min(low[x], low[node])
 
                 if low[node] > disc[x]:
-                    print("%d %d" % (x, node))
+                    print(x, node)
 
 
             elif node != parent[x]:  # Update low value of u for parent function calls
