@@ -17,6 +17,8 @@ class Graph:
         self.graph = defaultdict(list)
         self.id = 0
         self.muchii_incidente_in_v = 0
+        self.visitedArray = [False for x in range(V)]
+        self.tree = defaultdict(list)
 
     def addEdge(self, u, v):
         self.graph[u].append(v)
@@ -75,6 +77,40 @@ class Graph:
         if self.muchii_incidente_in_v == 0:
             print("nu exista")
 
+    def BFS(self, x):
+        self.visitedArray[x] = True
+        queueAsList = []
+        queueAsList.append((x,x))
+        while queueAsList:
+            currentNode = queueAsList[0][1]
+            if queueAsList[0][0] + 1 != currentNode + 1:
+                self.tree[queueAsList[0][0] + 1].append(currentNode + 1)
+                self.tree[currentNode + 1].append(queueAsList[0][0] + 1)
+            #print(queueAsList[0][0] + 1, currentNode + 1)
+            queueAsList.pop(0)
+            for y in self.graph[currentNode]:
+                if (self.visitedArray[y] == False):
+                    self.visitedArray[y] = True
+                    queueAsList.append((currentNode, y))
+
+        for x in range(1, len(self.tree) + 1):
+            print(x, end=": ")
+            for y in self.tree[x]:
+                print(y, end=" ")
+            print()
+
+    def arborepartial(self, v):
+
+        for x in self.graph[v]:
+            if len(self.graph[x]) >= 2:
+                self.graph[v].remove(x)
+                self.graph[x].remove(v)
+                break
+        print("Arbore:")
+        self.BFS(v)
+
+
+
 f = open('graf.in', 'r')
 firstline = f.readline()
 n = int(firstline.split()[0])
@@ -89,4 +125,6 @@ print("Enter v:")
 v = int(input())
 print("muchii critice:")
 g.bridge(v - 1)
-    
+
+g.arborepartial(v - 1)
+#g.prim()
