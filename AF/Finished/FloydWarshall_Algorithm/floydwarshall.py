@@ -49,7 +49,8 @@ class Graph:
                 for j in range(self.vertixes):
                     # If vertex k is on the shortest path from
                     # i to j, then update the value of dist[i][j]
-                    self.matrix[i][j] = min(self.matrix[i][j], self.matrix[i][k] + self.matrix[k][j])
+                    if not (self.matrix[i][k] == sys.maxsize or self.matrix[k][j] == sys.maxsize):
+                        self.matrix[i][j] = min(self.matrix[i][j], self.matrix[i][k] + self.matrix[k][j])
 
 
 g5 = Graph(4)
